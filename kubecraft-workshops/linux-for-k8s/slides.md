@@ -47,7 +47,7 @@ Site Reliability Engineer @ Datasite
 - Berkeley Mono
 - Presenterm
 - Mermaid CLI
-
+- 
 <!-- end_slide -->
 
 # Linux?
@@ -58,7 +58,6 @@ Containerization?
 <!-- pause -->
 
 Kubernetes?
-<!-- pause -->
 
 <!-- speaker_note: The reason for giving all this instruction is because what we're going to see in the next workshop is not magic, and it has its reason for being, with Linux implementations as the operating system. 
  -->
@@ -114,7 +113,9 @@ There are several more
 
 <!-- end_slide -->
 
-## Example: Mount: mount points
+## Example:
+
+Mount: mount points
 
 ```mermaid +render
 graph TD
@@ -325,7 +326,9 @@ sudo ip netns exec ns1 ip link show
     link/tunnel6 :: brd :: permaddr 86c3:80e5:c593::
 ```
 
-<!-- pause -->
+<!-- end_slide -->
+# Creating and Examining Namespaces
+
 Output from namespace ns2:
 
 ```bash
@@ -436,40 +439,49 @@ DNS systems in container environments
 
 General DNS resolution process in containers
 
+<!-- incremental_lists: true-->
+
 1. **Container registration in DNS**
 2. **Resolution configuration in the container**
 3. **Recursive lookup (if necessary)**
 
-<!-- pause -->
+<!-- end_slide -->
+
+# Internal DNS Operation in Containers
+<!-- incremental_lists: true-->
 
 1. **Container registration in DNS**
    - At startup, the orchestrator registers the container with its name
    - The internal IP is associated with the container name
 
-2. **Resolution configuration in the container**
-3. **Recursive lookup (if necessary)**
+<!-- end_slide -->
 
-<!-- pause -->
-
-1. **Container registration in DNS**
-   - At startup, the orchestrator registers the container with its name
-   - The internal IP is associated with the container name
-
-2. **Resolution configuration in the container**
-   - /etc/resolv.conf is configured internally
-   - The orchestrator's DNS is configured as the primary nameserver
-
-3. **Recursive lookup (if necessary)**
-
-<!-- pause -->
+# Internal DNS Operation in Containers
 
 1. **Container registration in DNS**
    - At startup, the orchestrator registers the container with its name
    - The internal IP is associated with the container name
 
+<!-- incremental_lists: true-->
+
 2. **Resolution configuration in the container**
-   - /etc/resolv.conf is configured internally
-   - The orchestrator's DNS is configured as the primary nameserver
+   - At startup, the orchestrator registers the container with its name
+   - The internal IP is associated with the container name
+
+<!-- end_slide -->
+
+# Internal DNS Operation in Containers
+
+1. **Container registration in DNS**
+   - At startup, the orchestrator registers the container with its name
+   - The internal IP is associated with the container name
+
+
+2. **Resolution configuration in the container**
+   - At startup, the orchestrator registers the container with its name
+   - The internal IP is associated with the container name
+
+<!-- incremental_lists: true-->
 
 3. **Recursive lookup (if necessary)**
    - If not found in local DNS, queries external DNS
@@ -496,23 +508,19 @@ General DNS resolution process in containers
   
   - **Use cases** and limitations
   <!-- speaker_note: | 
-  
-  Ideal for microservices, Continuous Integration and Continuous Delivery CI/CD, development and more. 
-  
-  Limitations are that we cannot run different OSes than the host. And the same applies to architectures. No virtualization. They can be emulated, yes, but it's different from virtualization. 
+  - Ideal for microservices, Continuous Integration and Continuous Delivery CI/CD, development and more. 
+  - Limitations are that we cannot run different OSes than the host. And the same applies to architectures. No virtualization. They can be emulated, yes, but it's different from virtualization. 
   
   And why can't it? remember that the kernel is shared. In security isolation (shared kernel)-->
-
-
-<!-- end_slide -->
 
 <!-- speaker_note: let's talk about namespaces - No lie, we already saw it. I'm kidding, we're not going to see it again.
  -->
 
-# Fundamental Architecture
-Namespaces
+<!-- end_slide -->
 
-<!-- pause -->
+# Fundamental Architecture
+
+Namespaces
 
 ![2025-04-18-18.54.37.png](2025-04-18-18.54.37.png)
 
@@ -538,8 +546,7 @@ The most notable feature is that each virtual machine functions as an independen
 
 <!-- speaker_note: It's like a duplication of resources. -->
 
-```mermaid
-
+```mermaid +render
 flowchart LR
     subgraph Hardware["Physical Hardware"]
         direction TB
@@ -603,7 +610,7 @@ Containers don't include complete operating systems, only the binaries and libra
 
  -->
 
-```mermaid
+```mermaid +render
 flowchart LR
     subgraph Hardware["Physical Hardware"]
         direction TB
@@ -644,9 +651,9 @@ flowchart LR
     class CPU,RAM,Storage,Network,HostOS,Kernel,Features,Docker,LibC,Bins1,Bins2,Bins3,App1,App2,App3 component
 ```
 
----
+<!-- end_slide -->
 
-```mermaid
+```mermaid +render
 flowchart TD
     subgraph Docker["Docker"]
         direction TB
@@ -816,56 +823,61 @@ The `pull` command downloads container images from registries.
 ```
 
 <!-- pause -->
-### Ejemplos de uso
+
+### Usage examples
 
 ```bash
-# Pull de la última versión (tag "latest")
+# Pull the latest version (tag "latest")
 docker pull nginx
 
-# Pull de una versión específica
+# Pull a specific version
 docker pull nginx:1.21.6-alpine
 
-# Pull desde un registro específico con namespace
+# Pull from a specific registry with namespace
 docker pull gcr.io/kubernetes-e2e-test-images/dnsutils:1.1
 ```
 
 <!-- end_slide -->
 
-# Anatomía de un Nombre de Imagen
+# Anatomy of an Image Name
 
 <!-- pause -->
 
-**Registro** (opcional, por defecto Docker Hub)
-- `quay.io/prometheus/prometheus`
 
-**Namespace/Imagen** (requerido)  
-- `quay.io/prometheus/prometheus`
+**Registry** (optional, defaults to Docker Hub)
+`quay.io/prometheus/prometheus`
 
-**Tag** (opcional, por defecto latest)
-- `nginx:1.21.6-alpine`
+**Namespace/Image** (required)  
+`quay.io/prometheus/prometheus`
+
+**Tag** (optional, defaults to latest)
+`nginx:1.21.6-alpine`
 
 <!-- pause -->
 
-Cuando no se especifica un registro, Docker Hub se usa por defecto:
+
+When a registry is not specified, Docker Hub is used by default:
 
 ```bash
 docker pull nginx
 
-# Equivalente a:
+# Equivalent to:
 docker pull docker.io/library/nginx:latest
 ```
 
 <!-- end_slide -->
 
-# Consejos Prácticos para Trabajar con Registros
+# Practical Tips for Working with Registries
 
 <!-- pause -->
-### Buenas prácticas
 
-- Evitar usar la etiqueta `latest` en producción
-- Usar etiquetas específicas para garantizar reproducibilidad
+### Best practices
+
+- Avoid using the `latest` tag in production
+- Use specific tags to ensure reproducibility
 
 <!-- pause -->
+
 ### Verification and security
 
 ```bash
