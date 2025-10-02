@@ -190,3 +190,86 @@ graph TD
 ```
 
 <!-- speaker_note: The key difference is that SysV init starts services sequentially, while systemd can start them in parallel based on dependencies -->
+
+<!-- end_slide -->
+
+# systemd Architecture
+
+**Core Components:**
+
+<!-- incremental_lists: true -->
+
+1. **Units** - Basic objects that systemd manages
+   - Services, sockets, devices, mount points, etc.
+
+2. **Targets** - Groups of units (similar to runlevels)
+   - multi-user.target, graphical.target, etc.
+
+3. **Dependencies** - Relationships between units
+   - Requires, Wants, After, Before
+
+<!-- speaker_note: |
+Units can be said to be similar to services or jobs in other init systems. However, a unit has a much broader definition, as these can be used to abstract services, network resources, devices, filesystem mounts, and isolated resource pools.
+
+Systemd categories units according to the type of resource they describe. The easiest way to determine the type of a unit is with its type suffix, which is appended to the end of the resource name.
+
+For now, we are going to focus on Units.
+-->
+
+<!-- end_slide -->
+
+
+# Unit Types
+
+| Unit Type | Extension | Purpose |
+|:----------|:----------|:--------|
+| Service | `.service` | System services and applications |
+| Socket | `.socket` | IPC sockets, network sockets |
+| Target | `.target` | Group of units (like runlevels) |
+| Mount | `.mount` | File system mount points |
+| Device | `.device` | Hardware devices |
+| Path | `.path` | File/directory monitoring |
+
+<!-- speaker_note: |
+These are the most common unit types you'll work with. Services are the most important for day-to-day administration
+
+. service: A service unit describes how to manage a service or application on the server. This will include how to start or stop the service, under which circumstances it should be automatically started, and the dependency and ordering information for related software.
+
+.socket: A socket unit file describes a network or IPC socket, or a FIFO buffer that systemd uses for socket-based activation. These always have an associated .service file that will be started when activity is seen on the socket that this unit defines.
+
+.target: A target unit is used to provide synchronization points for other units when booting up or changing states. They also can be used to bring the system to a new state. Other units specify their relation to targets to become tied to the target’s operations.
+
+.mount: This unit defines a mountpoint on the system to be managed by systemd. These are named after the mount path, with slashes changed to dashes. Entries within /etc/fstab can have units created automatically.
+
+
+.device: A unit that describes a device that has been designated as needing systemd management by udev or the sysfs filesystem. Not all devices will have .device files.
+
+.path: This unit defines a path that can be used for path-based activation. Basically it can monitor paths for changes.
+-->
+
+<!-- end_slide -->
+
+```mermaid +render
+flowchart TD
+    A([Power On]) --> B[Load BIOS/UEFI from NVRAM]
+    B --> C[Probe for hardware]
+    C --> D[Select boot device<br/>disk, network, ...]
+    D --> E[Identify EFI system partition]
+    E --> F[Load boot loader<br/>e.g., GRUB]
+    F --> G[Determine which kernel to boot]
+    G --> H[Load kernel]
+    H --> I[Instantiate kernel data structures]
+    I --> J[Start init/systemd as PID 1]
+    J --> K[Execute startup scripts]
+    K --> L([Running system])
+```
+
+<!-- end_slide -->
+# Resources
+
+https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/using_systemd_unit_files_to_customize_and_optimize_your_system/working-with-systemd-unit-files
+https://wiki.archlinux.org/title/Systemd
+https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html
+https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files
+
+<!-- end_slide -->
