@@ -265,6 +265,137 @@ flowchart TD
 ```
 
 <!-- end_slide -->
+
+# Basic Commands - systemctl
+
+**Service Management:**
+
+```bash
+# Start a service
+systemctl start nginx
+
+# Stop a service  
+systemctl stop nginx
+
+# Restart a service
+systemctl restart nginx
+
+# Reload configuration without restart
+systemctl reload nginx
+
+# Enable service at boot
+systemctl enable nginx
+
+# Disable service at boot
+systemctl disable nginx
+```
+
+<!-- end_slide -->
+
+# Basic Commands - systemctl (continued)
+
+**Status and Information:**
+
+```bash
+# Check service status
+systemctl status nginx
+
+# Check if service is active
+systemctl is-active nginx
+
+# Check if service is enabled
+systemctl is-enabled nginx
+
+# List all services
+systemctl list-units --type=service
+
+# List failed services
+systemctl --failed
+```
+
+<!-- end_slide -->
+# Service States and Transitions
+
+```mermaid +render
+stateDiagram-v2
+    [*] --> inactive
+    inactive --> activating : start
+    activating --> active : successful_start
+    activating --> failed : failed_start
+    active --> deactivating : stop
+    active --> reloading : reload
+    reloading --> active : successful_reload
+    reloading --> failed : failed_reload
+    deactivating --> inactive : successful_stop
+    failed --> inactive : reset-failed
+    failed --> activating : restart
+    
+    note right of active : Service is running
+    note right of failed : Service failed to start/run
+    note right of inactive : Service is stopped
+```
+
+<!-- speaker_note: Understanding these states is crucial for troubleshooting services -->
+
+<!-- end_slide -->
+
+# Logging with journalctl
+
+**systemd** uses **journald** for centralized logging
+
+```bash
+# View all logs
+journalctl
+
+# Follow logs in real-time
+journalctl -f
+
+# View logs for specific service
+journalctl -u nginx
+
+# View logs since boot
+journalctl -b
+
+# View logs for last hour
+journalctl --since "1 hour ago"
+
+# View logs between dates
+journalctl --since "2025-01-01" --until "2025-01-02"
+```
+
+<!-- end_slide -->
+
+# journalctl Advanced(?) Options
+
+```bash
+# Show only error and above
+journalctl -p err
+
+# Show logs in reverse order (newest first)
+journalctl -r
+
+# Show only kernel messages
+journalctl -k
+
+# Show logs with specific priority
+journalctl -p warning
+
+# Limit output lines
+journalctl -n 50
+
+# Show logs in JSON format
+journalctl -o json
+```
+
+
+<!-- speaker_note: The journalctl command is extremely powerful and replaces many traditional log viewing tools -->
+
+<!-- end_slide -->
+
+
+
+
+<!-- end_slide -->
 # Resources
 
 https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/using_systemd_unit_files_to_customize_and_optimize_your_system/working-with-systemd-unit-files
