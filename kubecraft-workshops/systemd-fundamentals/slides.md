@@ -41,17 +41,6 @@ Site Reliability Engineer @ Datasite
 
 <!-- end_slide -->
 
-## Deliverables
-
-<!-- incremental_lists: true-->
-
-- Systemd command cheat sheet
-- Unit file templates
-- Example scripts
-- Common troubleshooting cases
-
-<!-- end_slide -->
-
 # **SESSION 1**
 
 ## Fundamentals and Basic Management
@@ -129,6 +118,8 @@ It is worth learning the basics of how to do simple stuff with each popular syst
 <!-- end_slide -->
 
 > Ok, let's go back
+
+![de-hopping](img/de-hopping.jpg)
 
 <!-- end_slide -->
 
@@ -221,14 +212,14 @@ For now, we are going to focus on Units.
 
 # Unit Types
 
-| Unit Type | Extension | Purpose |
-|:----------|:----------|:--------|
-| Service | `.service` | System services and applications |
-| Socket | `.socket` | IPC sockets, network sockets |
-| Target | `.target` | Group of units (like runlevels) |
-| Mount | `.mount` | File system mount points |
-| Device | `.device` | Hardware devices |
-| Path | `.path` | File/directory monitoring |
+| Unit Type | Extension  | Purpose                          |
+| :-------- | :--------- | :------------------------------- |
+| Service   | `.service` | System services and applications |
+| Socket    | `.socket`  | IPC sockets, network sockets     |
+| Target    | `.target`  | Group of units (like runlevels)  |
+| Mount     | `.mount`   | File system mount points         |
+| Device    | `.device`  | Hardware devices                 |
+| Path      | `.path`    | File/directory monitoring        |
 
 <!-- speaker_note: |
 These are the most common unit types you'll work with. Services are the most important for day-to-day administration
@@ -639,12 +630,60 @@ sudo systemctl start broken.service
 - Always reload daemon after editing unit files
 
 <!-- end_slide -->
-<!-- end_slide -->
-# Resources
+# 📚 Resources & Further Learning
 
-https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/using_systemd_unit_files_to_customize_and_optimize_your_system/working-with-systemd-unit-files
-https://wiki.archlinux.org/title/Systemd
-https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html
-https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files
+## 📖 Official Documentation
+
+**[Red Hat Enterprise Linux - systemd Unit Files](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/using_systemd_unit_files_to_customize_and_optimize_your_system/working-with-systemd-unit-files)**
+- Comprehensive guide to creating and customizing systemd unit files
+- Best practices for enterprise environments
+
+**[systemd Manual Pages](https://www.man7.org/linux/man-pages/man5/systemd.unit.5.html)**
+- Complete reference for systemd unit configuration
+- Detailed parameter documentation
+
+## 🎓 Tutorials & Guides
+
+**[DigitalOcean - Understanding systemd Units](https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files)**
+- Beginner-friendly introduction to systemd concepts
+- Practical examples and hands-on tutorials
+
+**[Arch Linux Wiki - systemd](https://wiki.archlinux.org/title/Systemd)**
+- Community-driven comprehensive systemd documentation
+- Advanced configuration examples
 
 <!-- end_slide -->
+# 📚 Resources & Further Learning
+
+## 🛠️ Tools & Utilities
+
+**[systemd-analyze](https://www.freedesktop.org/software/systemd/man/systemd-analyze.html)**
+- Boot performance analysis and system inspection
+- Dependency tree visualization
+
+**[journalctl](https://www.freedesktop.org/software/systemd/man/journalctl.html)**
+- systemd journal query and filtering tool
+- Essential for troubleshooting and monitoring
+
+## 📝 Cheat Sheets & Quick References
+
+**[systemd Commands Cheat Sheet](https://developers.redhat.com/cheat-sheets/systemd-commands-cheat-sheet)**
+- Essential commands for daily operations
+- Quick syntax reference
+
+<!-- end_slide -->
+
+## 🔍 Deep Dive Resources
+
+**[Lennart Poettering's Blog](http://0pointer.de/blog/)**
+- Insights from systemd's creator
+- Advanced topics and design philosophy
+
+**[systemd for Administrators Series](https://0pointer.de/blog/projects/systemd-for-admins-1.html)**
+- Multi-part tutorial series
+- From basics to advanced administration
+
+<!-- end_slide -->
+Thank you!
+
+![systemd_cat](img/systemd_cat.jpg)
