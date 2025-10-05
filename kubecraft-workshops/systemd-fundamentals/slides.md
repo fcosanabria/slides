@@ -570,6 +570,75 @@ curl http://localhost:8080
 
 <!-- end_slide -->
 
+# Troubleshooting Failed Services
+
+**Common issues and solutions:**
+
+```bash
+# Check service status
+systemctl status failed-service.service
+
+# View detailed logs
+journalctl -u failed-service.service -n 50
+
+# Check configuration syntax
+systemd-analyze verify /etc/systemd/system/myservice.service
+
+# Reset failed state
+sudo systemctl reset-failed failed-service.service
+
+# Check dependencies
+systemctl list-dependencies myservice.service
+```
+
+<!-- end_slide -->
+
+# Troubleshooting Exercise
+
+**Let's create a deliberately broken service:**
+
+```bash
+sudo tee /etc/systemd/system/broken.service << 'EOF'
+[Unit]
+Description=Broken Service Example
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/nonexistent/command
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl start broken.service
+```
+
+**Now troubleshoot it using the commands we learned!**
+
+<!-- end_slide -->
+
+# Session 1 Summary
+
+**What we covered:**
+
+- systemd architecture and concepts
+- Basic service management with `systemctl`
+- Log analysis with `journalctl`
+- Creating custom services
+- Basic troubleshooting techniques
+
+<!-- pause -->
+
+**Key takeaways:**
+- systemd provides powerful service management
+- Unit files define service behavior
+- journalctl centralizes logging
+- Always reload daemon after editing unit files
+
+<!-- end_slide -->
 <!-- end_slide -->
 # Resources
 
