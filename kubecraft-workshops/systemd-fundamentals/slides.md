@@ -365,7 +365,7 @@ journalctl --since "2025-01-01" --until "2025-01-02"
 
 <!-- end_slide -->
 
-# journalctl Advanced(?) Options
+# journalctl Options (continued)
 
 ```bash
 # Show only error and above
@@ -392,8 +392,183 @@ journalctl -o json
 
 <!-- end_slide -->
 
+# Hands-On Exercise 1.1
+## Managing Existing Services
 
+**Practice Basic Service Management**
 
+```bash
+# Check status of SSH service
+systemctl status ssh
+
+# If SSH is not running, start it
+sudo systemctl start ssh
+
+# Enable SSH to start at boot
+sudo systemctl enable ssh
+
+# Check if it's enabled
+systemctl is-enabled ssh
+
+# View SSH logs
+journalctl -u ssh -n 20
+```
+
+<!-- pause -->
+
+**Try with other services:** `nginx`, `apache2`, `postgresql`
+
+<!-- end_slide -->
+
+# Creating a Simple Custom Service
+
+**Step 1: Create a simple script**
+
+```bash
+# Create a directory for our service
+sudo mkdir -p /opt/myapp
+
+# Create a simple script
+sudo tee /opt/myapp/hello.sh << 'EOF'
+#!/bin/bash
+while true; do
+    echo "Hello from my service: $(date)"
+    sleep 10
+done
+EOF
+
+# Make it executable
+sudo chmod +x /opt/myapp/hello.sh
+```
+
+<!-- end_slide -->
+
+# Creating a Simple Custom Service (continued)
+
+**Step 2: Create the service unit file**
+
+```bash
+sudo tee /etc/systemd/system/hello.service << 'EOF'
+[Unit]
+Description=Hello World Service
+After=network.target
+
+[Service]
+Type=simple
+User=nobody
+ExecStart=/opt/myapp/hello.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+<!-- end_slide -->
+
+# Service Unit File Breakdown
+
+```bash
+[Unit]
+Description=Hello World Service    # Human-readable description
+After=network.target              # Start after network is ready
+
+[Service]
+Type=simple                       # Service type
+User=nobody                       # Run as specific user
+ExecStart=/opt/myapp/hello.sh    # Command to execute
+Restart=always                    # Restart policy
+RestartSec=3                     # Wait 3 seconds before restart
+
+[Install]
+WantedBy=multi-user.target       # Target that wants this service
+```
+
+<!-- speaker_note: The [Unit] section defines metadata and dependencies, [Service] defines how to run the service, and [Install] defines installation information -->
+
+<!-- end_slide -->
+
+# Testing Our Custom Service
+
+```bash
+# Reload systemd to read new unit file
+sudo systemctl daemon-reload
+
+# Start our service
+sudo systemctl start hello.service
+
+# Check status
+systemctl status hello.service
+
+# View logs
+journalctl -u hello.service -f
+
+# Enable at boot
+sudo systemctl enable hello.service
+
+# Stop the service
+sudo systemctl stop hello.service
+```
+
+<!-- end_slide -->
+
+# Hands-On Exercise 1.2
+## Create a Python Service
+
+**Create a Python web server service**
+
+```bash
+# Create Python script
+sudo tee /opt/myapp/webserver.py << 'EOF'
+#!/usr/bin/env python3
+import http.server
+import socketserver
+import os
+
+PORT = 8080
+os.chdir('/var/www/html')
+
+Handler = http.server.SimpleHTTPRequestHandler
+with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    print(f"Server running on port {PORT}")
+    httpd.serve_forever()
+EOF
+
+sudo chmod +x /opt/myapp/webserver.py
+```
+
+<!-- end_slide -->
+
+# Python Service Unit File
+
+```bash
+sudo tee /etc/systemd/system/python-web.service << 'EOF'
+[Unit]
+Description=Simple Python Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+ExecStart=/usr/bin/python3 /opt/myapp/webserver.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+**Test the service:**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start python-web.service
+curl http://localhost:8080
+```
+
+<!-- end_slide -->
 
 <!-- end_slide -->
 # Resources
