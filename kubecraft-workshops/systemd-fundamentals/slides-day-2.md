@@ -318,6 +318,27 @@ Common Patters:
 
 Real-World Example: Certificate Renewal
 
+# /etc/systemd/system/nginx-cert-watcher.path
+[Unit]
+Description=Watch SSL certificates
+
+[Path]
+PathChanged=/etc/letsencrypt/live/example.com/fullchain.pem
+Unit=nginx-reload.service
+
+[Install]
+WantedBy=multi-user.target
+
+
+# /etc/systemd/system/nginx-reload.service
+[Unit]
+Description=Reload nginx after cert change
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl reload nginx
+
+
 Problem: Let's Encrypt renews certs, need to reload nginx.
 Result: Cert renews → nginx reloads automatically → zero manual intervention.
 -->
@@ -327,7 +348,34 @@ Result: Cert renews → nginx reloads automatically → zero manual intervention
 
 # Mount Units
 
-Auto-managed by systemd; name derived from path (`/data/app` → `data-app.mount`).
+Auto-managed by systemd.
+
+- Name is derived from path (`/data/app` → `data-app.mount`).
+<!-- speaker_note: |
+ Critical: Filename must match mount point with slashes as dashes:
+-->
+
+```
+    /mnt/data → mnt-data.mount
+    /var/lib/docker → var-lib-docker.mount
+    /home → home.mount
+```
+
+
+
+<!-- speaker_note: |
+
+Mount units manage filesystem mounts declaratively through systemd.
+
+Think: "Manage mounts like services – with dependencies, ordering, and automatic handling."
+
+- Full dependency system
+- Can be started/stopped on demand
+- Better error handling and logging
+- Integration with other units
+
+-->
+
 ```
 [Unit]
 Description=App Data Mount
@@ -364,6 +412,15 @@ Example override:
 [Service]
 Environment=LOG_LEVEL=debug FEATURE_X=1
 ```
+
+<!-- speaker_note: |
+
+- Environment=KEY=VAL: Inline variables.
+- EnvironmentFile=/path/file: External key=value list.
+- WorkingDirectory= : Where the process lives.
+- Drop-ins/overrides (systemctl edit name): Layer small overrides instead of editing the main file.
+-->
+
 
 <!-- end_slide -->
 
