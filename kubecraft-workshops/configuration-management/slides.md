@@ -14,13 +14,13 @@ theme:
 
 # Configuration Management Workshop
 
-**1 Hour - Modern Infrastructure Automation**
+**Modern Infrastructure Automation**
 
 - Focus on Ansible for modern environments
 - Practical examples and best practices
 - Industry-standard approaches
 
-<!-- speaker_note: Welcome everyone to this configuration management workshop. In the next hour, we'll focus primarily on Ansible, which has become the de facto standard for configuration management in modern infrastructure. We'll cover theoretical concepts but spend most of our time on practical, hands-on examples that you can immediately apply in your work environment. -->
+<!-- speaker_note: Welcome everyone to this configuration management workshop. In the next hour, we'll focus primarily on Ansible, which has become the de facto standard for configuration management in modern infrastructure. We'll cover theoretical concepts but as usual - hands-on examples that you can immediately apply in your work environment or your current or learning guide. -->
 
 <!-- end_slide -->
 
@@ -41,8 +41,6 @@ Site Reliability Engineer @ Datasite
 - linkedin.com/in/fcosanabria
 - github.com/fcosanabria
 - instagram.com/digital.death.disrupt
-
-<!-- speaker_note: I'm Francisco Sanabria, and I've been working with configuration management tools for over a decade. At IBM, I worked extensively with Chef and Puppet in large enterprise environments, and at Datasite, I've been implementing Ansible-based automation for our cloud infrastructure. I've seen the evolution of these tools and the real-world challenges they solve. -->
 
 <!-- end_slide -->
 
@@ -95,7 +93,10 @@ flowchart TD
 
 This flowchart represents the core loop of any configuration management system. We define what we want our systems to look like, compare that with the current state, and if there's a difference, we apply the necessary changes. This is called "convergence" - the system converges toward the desired state. The beauty is that this process is idempotent - running it multiple times produces the same result without side effects. -->
 
-<!-- pause -->
+
+<!-- end_slide -->
+
+# Configuration Management in a Nutshell
 
 **Key Benefits:**
 - Consistency across environments
@@ -172,6 +173,15 @@ Each tool has its strengths. Ansible's agentless approach and YAML syntax make i
 - Ansible dominates cloud environments
 - GitOps integration becoming standard
 - Kubernetes-native configuration management emerging
+
+- **[Ansible Documentation](https://docs.ansible.com/)** - Comprehensive official docs
+- **[Ansible Galaxy](https://galaxy.ansible.com/)** - Community roles and collections  
+- **[Red Hat Learning](https://www.redhat.com/en/services/training/ex407-red-hat-certificate-expertise-ansible-automation)** - Official certification
+- **[Ansible Best Practices](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)** - Official best practices guide
+
+<!-- speaker_note: |
+
+These resources will take you from beginner to expert. The official documentation is excellent and includes many examples. Ansible Galaxy is invaluable for finding existing solutions to common problems. If you're serious about Ansible, consider the Red Hat certification - it's well-respected in the industry. -->
 
 <!-- end_slide -->
 
@@ -328,8 +338,6 @@ ansible-galaxy collection install amazon.aws
 ansible-inventory -i aws_ec2.yml --list
 ```
 
-<!-- pause -->
-
 **Dynamic Inventory Configuration (`aws_ec2.yml`):**
 ```yaml
 plugin: aws_ec2
@@ -343,25 +351,21 @@ keyed_groups:
     prefix: type
 ```
 
-<!-- speaker_note: |
-
-Dynamic inventories are game-changers for cloud environments. Instead of manually maintaining inventory files, Ansible queries the cloud provider's API to discover instances. It can automatically group instances by tags, instance types, regions, or any metadata. This means your inventory is always current, even as instances are created and destroyed. -->
-
-<!-- pause -->
-
 **Benefits:**
 - Always up-to-date inventory
 - Automatic grouping by cloud tags
 - No manual inventory maintenance
 - Perfect for auto-scaling environments
 
+<!-- speaker_note: |
+
+Dynamic inventories are game-changers for cloud environments. Instead of manually maintaining inventory files, Ansible queries the cloud provider's API to discover instances. It can automatically group instances by tags, instance types, regions, or any metadata. This means your inventory is always current, even as instances are created and destroyed. -->
+
 <!-- end_slide -->
 
 # Variable Assignments
 
 **Variable Hierarchy (highest to lowest precedence):**
-
-<!-- incremental_lists: true -->
 
 1. **Command line** (`-e` or `--extra-vars`)
 2. **Task vars** (in playbook tasks)
@@ -612,8 +616,6 @@ This is what gets written to the target server. Ansible has automatically insert
 
 A playbook contains one or more plays. Each play targets a specific group of hosts and defines what should be done on those hosts. This example has two plays - one for web servers and one for databases. Each play can have its own variables, tasks, and even different privilege escalation settings. This separation allows you to organize complex deployments logically. -->
 
-<!-- pause -->
-
 **Benefits of Multiple Plays:**
 - Target different host groups
 - Use different privilege levels
@@ -640,8 +642,6 @@ roles/
 <!-- speaker_note: |
 
 Roles are Ansible's way of organizing complex configurations into reusable components. Think of a role as a complete package for configuring a specific service. The directory structure is standardized - tasks go in tasks/main.yml, handlers in handlers/main.yml, etc. This organization makes roles portable and shareable across projects and teams. -->
-
-<!-- pause -->
 
 **Using Roles in Playbooks:**
 ```yaml
@@ -707,8 +707,6 @@ Handlers are special tasks that only run when triggered by other tasks. The rest
 
 # Best Practices for Structuring Configuration
 
-<!-- pause -->
-
 **📁 Recommended Directory Structure:**
 ```
 ansible-project/
@@ -729,7 +727,6 @@ ansible-project/
 
 This structure separates environments clearly and scales well. Each environment has its own inventory and variables. Roles are shared across environments, but configured differently through environment-specific variables. The requirements.yml file lists external roles and collections your project depends on, making it easy for team members to set up the environment. -->
 
-<!-- pause -->
 
 **🔒 Security Best Practices:**
 - Use Ansible Vault for secrets
@@ -865,7 +862,9 @@ ansible-playbook -i hosts site.yml
 ansible-playbook -i hosts site.yml
 ```
 
-<!-- speaker_note: | Run the playbook twice to see idempotency in action. The first run will show "changed" status for tasks that create files. The second run will show "ok" status because everything is already in the desired state. This is a key concept - Ansible only makes changes when necessary. -->
+<!-- speaker_note: | 
+
+Run the playbook twice to see idempotency in action. The first run will show "changed" status for tasks that create files. The second run will show "ok" status because everything is already in the desired state. This is a key concept - Ansible only makes changes when necessary. -->
 
 **Expected Output:**
 - First run: Tasks show "changed" status
